@@ -1,0 +1,61 @@
+\documentclass[UTF-8,a4paper,zihao=-4]{ctexart}
+\usepackage[a4paper,left=3cm,right=2.5cm,top=3cm,bottom=2.5cm]{geometry}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[backend=biber,style=gb7714-2015]{biblatex} 
+\usepackage[labelfont=bf,textfont=bf]{caption}
+\addbibresource{ref.bib} %待补上参考文献 
+\usepackage{amsmath,amssymb}   % 公式
+\usepackage{graphicx}          % 插图
+\usepackage{booktabs}           % 三线表
+\usepackage{hyperref}           % 超链接（最后加载，少数例外）
+\usepackage{placeins}
+\usepackage{subcaption}
+\usepackage{csvsimple}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\pagestyle{plain} 
+\ctexset{
+  section = {
+    number = \chinese{section},   % 中文数字：一、二、三…
+    format = \zihao{3}\heiti\centering,
+    aftername = \quad,            % 编号和标题之间的空格（可调）
+    % 如果你想变成“一、绪论”（带顿号），把 aftername 改成 \hspace{1em} 或直接写顿号
+  }
+}
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{center}
+        \vspace*{-2cm}
+        {\zihao{2}\heiti\@title\par}
+    \end{center}
+}
+\makeatother
+
+\makeatletter
+\renewenvironment{abstract}
+{
+    \begin{center}
+        {\zihao{-3}\textbf{摘要}}
+    \end{center}
+    \zihao{-4}
+}
+{}
+\makeatother
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    columns=fullflexible
+}
+
+\begin{document}
+\title{多波束测线方案的设计问题的设计与求解}
+\date{}
+\maketitle
+
+\end{document}
