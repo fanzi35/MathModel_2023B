@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from zipfile import ZIP_DEFLATED, ZipFile
 from xml.etree import ElementTree as ET
 
@@ -35,14 +35,21 @@ def _set_sheet_cell(sheet_root, cell_ref, value):
     ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     row_number = "".join(ch for ch in cell_ref if ch.isdigit())
 
+    sheet_data = sheet_root.find("m:sheetData", ns)
+    if sheet_data is None:
+        sheet_data = ET.SubElement(
+            sheet_root,
+            "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}sheetData",
+        )
+
     row_node = None
-    for row in sheet_root.find("m:sheetData", ns).findall("m:row", ns):
+    for row in sheet_data.findall("m:row", ns):
         if row.attrib.get("r") == row_number:
             row_node = row
             break
     if row_node is None:
         row_node = ET.SubElement(
-            sheet_root.find("m:sheetData", ns),
+            sheet_data,
             "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}row",
             {"r": row_number},
         )
@@ -60,6 +67,10 @@ def _set_sheet_cell(sheet_root, cell_ref, value):
         )
 
     cell_node.attrib.pop("t", None)
+    inline_string = cell_node.find("m:is", ns)
+    if inline_string is not None:
+        cell_node.remove(inline_string)
+
     value_node = cell_node.find("m:v", ns)
     if value_node is None:
         value_node = ET.SubElement(
@@ -69,35 +80,90 @@ def _set_sheet_cell(sheet_root, cell_ref, value):
     value_node.text = format_number(value)
 
 
-def save_result1_excel(template_path, output_path, result_df):
-    """基于模板写出第一问 Excel 结果。"""
+def _first_sheet_path(zip_bytes):
+    """解析 Excel 工作簿中第一个工作表的压缩包路径。"""
     ns = {
         "m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
         "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+        "p": "http://schemas.openxmlformats.org/package/2006/relationships",
     }
+
+    workbook = ET.fromstring(zip_bytes["xl/workbook.xml"])
+    rel_root = ET.fromstring(zip_bytes["xl/_rels/workbook.xml.rels"])
+    rels = {
+        rel.attrib["Id"]: rel.attrib["Target"]
+        for rel in rel_root.findall("p:Relationship", ns)
+    }
+
+    first_sheet = workbook.find("m:sheets", ns)[0]
+    relation_id = first_sheet.attrib[
+        "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
+    ]
+    target = rels[relation_id].lstrip("/")
+
+    if target.startswith("xl/"):
+        return str(PurePosixPath(target))
+    return str(PurePosixPath("xl") / PurePosixPath(target))
+
+
+def _write_template_cells(template_path, output_path, cell_values):
+    """在 Excel 模板第一个工作表中批量写入数值。"""
     zip_bytes = {}
     with ZipFile(template_path, "r") as zf:
         for name in zf.namelist():
             zip_bytes[name] = zf.read(name)
 
-    workbook = ET.fromstring(zip_bytes["xl/workbook.xml"])
-    rel_root = ET.fromstring(zip_bytes["xl/_rels/workbook.xml.rels"])
-    rels = {rel.attrib["Id"]: rel.attrib["Target"] for rel in rel_root}
-    first_sheet = workbook.find("m:sheets", ns)[0]
-    rid = first_sheet.attrib["{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"]
-    sheet_path = "xl/" + rels[rid]
+    sheet_path = _first_sheet_path(zip_bytes)
     sheet_root = ET.fromstring(zip_bytes[sheet_path])
 
-    cols = ["B", "C", "D", "E", "F", "G", "H", "I", "J"]
-    for idx, col in enumerate(cols):
-        row = result_df.iloc[idx]
-        _set_sheet_cell(sheet_root, f"{col}2", row["depth_m"])
-        _set_sheet_cell(sheet_root, f"{col}3", row["width_m"])
-        if idx > 0:
-            _set_sheet_cell(sheet_root, f"{col}4", row["overlap_rate_pct"])
+    for cell_ref, value in cell_values.items():
+        _set_sheet_cell(sheet_root, cell_ref, value)
 
     zip_bytes[sheet_path] = ET.tostring(sheet_root, encoding="utf-8", xml_declaration=True)
 
+    output_path = Path(output_path)
+    ensure_directory(output_path.parent)
     with ZipFile(output_path, "w", ZIP_DEFLATED) as zf:
         for name, content in zip_bytes.items():
             zf.writestr(name, content)
+
+
+def save_result1_excel(template_path, output_path, result_df):
+    """基于模板写出第一问 Excel 结果。"""
+    cell_values = {}
+    cols = ["B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    for idx, col in enumerate(cols):
+        row = result_df.iloc[idx]
+        cell_values[f"{col}2"] = row["depth_m"]
+        cell_values[f"{col}3"] = row["width_m"]
+        if idx > 0:
+            cell_values[f"{col}4"] = row["overlap_rate_pct"]
+
+    _write_template_cells(template_path, output_path, cell_values)
+
+
+def save_result2_excel(template_path, output_path, result_df):
+    """基于模板写出第二问 Excel 结果。"""
+    direction_order = result_df["direction_deg"].drop_duplicates().tolist()
+    distance_order = result_df["distance_nm"].drop_duplicates().tolist()
+
+    width_table = result_df.pivot(
+        index="direction_deg",
+        columns="distance_nm",
+        values="width_m",
+    ).reindex(index=direction_order, columns=distance_order)
+
+    cols = ["C", "D", "E", "F", "G", "H", "I", "J"]
+    rows = range(3, 11)
+    if width_table.shape != (len(rows), len(cols)):
+        raise ValueError(
+            "第二问结果表应为 8×8；"
+            f"当前得到 {width_table.shape[0]}×{width_table.shape[1]}。"
+        )
+
+    cell_values = {}
+    for row_number, direction_deg in zip(rows, direction_order):
+        for col, distance_nm in zip(cols, distance_order):
+            cell_values[f"{col}{row_number}"] = width_table.loc[direction_deg, distance_nm]
+
+    _write_template_cells(template_path, output_path, cell_values)
