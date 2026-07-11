@@ -27,6 +27,7 @@ def format_number(value, digits=2):
 
 def save_table_csv(df, output_path):
     """保存表格副本。"""
+    ensure_directory(Path(output_path).parent)
     df.to_csv(output_path, index=False, encoding="utf-8-sig")
 
 
