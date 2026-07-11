@@ -187,9 +187,9 @@ def _search_uniform_overlap_for_fixed_count(line_count):
 def solve_question3():
     """求解第三问最优布线。"""
     beta_rad = QUESTION3_OPTIMAL_BETA_RAD
-    _, rough_df, b_rad = _generate_line_positions_for_overlap(QUESTION3_OVERLAP_MIN)
-    line_count = len(rough_df)
-    overlap_rate, line_df, _ = _search_uniform_overlap_for_fixed_count(line_count)
+    overlap_rate = QUESTION3_OVERLAP_MIN
+    _, line_df, b_rad = _generate_line_positions_for_overlap(overlap_rate)
+    line_count = len(line_df)
 
     total_length_nm = line_count * QUESTION3_REGION_NS_NM
     overlap_values = line_df["overlap_rate_pct"].dropna()
