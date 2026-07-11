@@ -1,4 +1,5 @@
 from pathlib import Path
+import math
 
 
 # 第一问公共参数
@@ -35,3 +36,25 @@ RESULT2_XLSX_NAME = "question2_result.xlsx"
 RESULT2_TABLE_NAME = "question2_result_table.csv"
 QUESTION2_WIDTH_HEATMAP_NAME = "question2_width_heatmap.png"
 QUESTION2_WIDTH_CURVE_NAME = "question2_width_curve.png"
+
+# 第三问公共参数
+QUESTION3_CENTER_DEPTH_M = 110.0
+QUESTION3_REGION_EW_NM = 4.0
+QUESTION3_REGION_NS_NM = 2.0
+QUESTION3_EAST_BOUNDARY_NM = QUESTION3_REGION_EW_NM / 2.0
+QUESTION3_WEST_BOUNDARY_NM = -QUESTION3_REGION_EW_NM / 2.0
+QUESTION3_NORTH_BOUNDARY_NM = QUESTION3_REGION_NS_NM / 2.0
+QUESTION3_SOUTH_BOUNDARY_NM = -QUESTION3_REGION_NS_NM / 2.0
+QUESTION3_OVERLAP_MIN = 0.10
+QUESTION3_OVERLAP_MAX = 0.20
+QUESTION3_OPTIMAL_BETA_RAD = math.pi / 2
+QUESTION3_BETA_SCAN_DEG = list(range(0, 181, 2))
+
+# 第三问输出文件名
+QUESTION3_SUMMARY_NAME = "question3_summary.csv"
+QUESTION3_LINE_PLAN_NAME = "question3_line_plan.csv"
+QUESTION3_SCENE_3D_NAME = "question3_scene_3d.png"
+QUESTION3_SECTION_NAME = "question3_section_beta_90.png"
+QUESTION3_DISTRIBUTION_NAME = "question3_line_distribution.png"
+QUESTION3_OVERLAP_NAME = "question3_overlap_curve.png"
+QUESTION3_BETA_LENGTH_NAME = "question3_beta_length_curve.png"
