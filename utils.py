@@ -26,10 +26,10 @@ def format_number(value, digits=2):
     return f"{float(value):.{digits}f}"
 
 
-def save_table_csv(df, output_path):
+def save_table_csv(df, output_path, include_header=True):
     """保存表格副本。"""
     ensure_directory(Path(output_path).parent)
-    df.to_csv(output_path, index=False, encoding="utf-8-sig")
+    df.to_csv(output_path, index=False, header=include_header, encoding="utf-8-sig")
 
 
 def _set_sheet_cell(sheet_root, cell_ref, value):

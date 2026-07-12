@@ -77,14 +77,14 @@ def get_section_angle_labels():
 
 def build_result_table(result_df):
     """生成结果表格副本。"""
-    columns = ["指标"] + [str(int(v)) for v in result_df["distance_m"].tolist()]
     rows = [
+        ["测线距中心点处的距离/m"] + [str(int(v)) for v in result_df["distance_m"].tolist()],
         ["海水深度/m"] + [format_number(v) for v in result_df["depth_m"].tolist()],
         ["覆盖宽度/m"] + [format_number(v) for v in result_df["width_m"].tolist()],
-        ["与前一条测线的重叠率/%", "——"]
+        ["与前一条测线的重叠率/%", "—"]
         + [format_number(v) for v in result_df["overlap_rate_pct"].iloc[1:].tolist()],
     ]
-    return pd.DataFrame(rows, columns=columns)
+    return pd.DataFrame(rows)
 
 
 def _seabed_depth(x_coord, alpha_rad):
@@ -338,7 +338,7 @@ def run_question1():
     table_df = build_result_table(result_df)
 
     save_result1_excel(TEMPLATE_RESULT1, TABLE_OUTPUT_DIR / RESULT1_XLSX_NAME, result_df)
-    save_table_csv(table_df, TABLE_OUTPUT_DIR / RESULT1_TABLE_NAME)
+    save_table_csv(table_df, TABLE_OUTPUT_DIR / RESULT1_TABLE_NAME, include_header=False)
 
     plot_section_diagram(result_df, FIGURE_OUTPUT_DIR / SECTION_FIGURE_NAME)
     plot_depth_curve(result_df, FIGURE_OUTPUT_DIR / DEPTH_FIGURE_NAME)
