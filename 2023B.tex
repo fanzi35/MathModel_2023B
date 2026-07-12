@@ -58,4 +58,309 @@
 \date{}
 \maketitle
 
+
+%%%%%摘要%%%%%
+\begin{abstract}
+多波束测深系统利用多个不同角度的声波波束，实现对海底地形的条带式测量。其覆盖宽度受水深、海底坡度及测线方向等因素影响，因此需要合理规划测线，以保证全面覆盖并提高测量效率。本文基于对测线，覆盖率等因素进行了的分析，建立了相应的数学模型，用于解决多波束测线方案的设计问题。
+
+\textbf{针对问题一：}
+
+\textbf{针对问题二：}
+
+\textbf{针对问题三：}
+
+\textbf{针对问题四：}
+
+
+\end{abstract}
+
+%%%%%问题重述%%%%%
+\newpage
+\section{问题背景与重述}
+\subsection{问题背景}
+多波束测深系统是一种高效的海底地形测量技术。该系统通过向海底发射多个不同角度的声波波束，并根据声波的传播时间和方向计算海底测点的空间位置，从而在航线两侧形成具有一定宽度的条带式测深区域。相较于传统单波束测深，多波束测量具有覆盖范围广、测量效率高和数据密度大等优点。然而，其覆盖宽度及相邻测线重叠率会受到海水深度、海底坡度、波束开角和测线方向等因素的共同影响。因此，合理规划测线位置与方向，在保证测量区域完全覆盖且满足重叠率要求的前提下尽可能缩短测线总长度，是提高多波束测量效率的关键。
+
+\subsection{问题要求}
+
+\begin{enumerate}
+
+    \item 与测线方向垂直的平面和海底坡面的交线构成一条与水平面夹角为$\alpha$的斜线，称$\alpha$为坡度。请建立多波束测深的覆盖宽度及相邻条带之间重叠率的数学模型。
+
+    若多波束换能器的开角为$120^\circ$，坡度为$1.5^\circ$海域中心点处的海水深度为 70 m，利用上述模型计算表 1 中所列位置的指标值，将结果以表 1 的格式放在正文中，同时保存到result1.xlsx文件中。
+
+    \item 考虑一个矩形待测海域，测线方向与海底坡面的法向在水平面上投影的夹角为$\beta$，请建立多波束测深覆盖宽度的数学模型。 
+    若多波束换能器的开角为$120^\circ$，坡度为$1.5^\circ$，海域中心点处的海水深度 120 m，利用上述模型计算表 2 中所列位置多波束测深的覆盖宽度，将结果以表 2 的格式放在正文中，同时保存到result2.xlsx 文件中。 
+
+    \item 考虑一个南北长 2 海里、东西宽 4 海里的矩形海域内，海域中心点处的海水深度为 110 m，西深东浅，坡度为$1.5^\circ$，多波束换能器的开角为$120^\circ$。请设计一组测量长度最短、可完全覆盖整个待测海域的测线，且相邻条带之间的重叠率满足 10\%\textasciitilde20\% 的要求。 
+
+    \item 海水深度数据（附件.xlsx）是若干年前某海域（南北长 5 海里、东西宽 4 海里）单波束测量的测深数据，现希望利用这组数据为多波束测量船的测量布线提供帮助。在设计测线时，有如下要求：(1) 沿测线扫描形成的条带尽可能地覆盖整个待测海域；(2) 相邻条带之间的重叠率尽量控制在 20\%以下；(3) 测线的总长度尽可能短。在设计出具体的测线后，请计算如下指标：(1) 测线的总长度；(2) 漏测海区占总待测海域面积的百分比；(3) 在重叠区域中，重叠率超过 20\% 部分的总长度。
+
+\end{enumerate}
+
+\section{问题分析}
+\subsection{问题一分析}
+
+\subsection{问题二分析}
+
+\subsection{问题三分析}
+
+\subsection{问题四分析}
+%%%%%准备工作%%%%%
+\section{初步准备}
+\subsection{模型假设}
+\begin{enumerate}
+    \item 假设声波沿直线传播，忽略折射和散射的影响。
+    \item 假设多波束换能器工作稳定，波束开角保持不变且关于测船正下方对称。
+    \item 假设测船沿规划测线航行，忽略风浪、洋流及定位误差造成的航迹偏移。
+    \item 假设换能器接收到的信号都到达了海底，没有被鱼虾等异物影响。
+\end{enumerate}
+
+%%表%%
+\subsection{符号说明}
+本文所使用的符号及说明如下表所示。
+\begin{table}[htbp]
+\centering
+\zihao{5}
+
+\caption{符号说明}
+\begin{tabular}{ccc}
+\toprule
+符号 & 说明 & 单位 \\
+\midrule
+$\theta$ & 多波束换能器的开角 & m \\
+d & 相邻两条测线的间距 &m\\
+W & 条带的覆盖宽度 & m \\
+
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\parbox{0.9\textwidth}{
+\zihao{5}
+注：其他符号已在相应部分中说明。
+}
+\end{table}
+\FloatBarrier
+
+%%%%%模型建立与求解%%%%%
+\section{模型建立与求解}
+\subsection{问题一的模型建立与求解}
+\subsubsection{相关概念说明}
+如图所示，对于在海底地形平坦的海域中，相邻条带之间的重叠率定义为$\eta = 1-\frac{d}{W}$，其中 d 为相邻两条测线的间距，W 为条带的覆盖宽度。若 $\eta$ < 0，则表示漏测。
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{pic/image.png}
+    \caption{覆盖宽度、测线间距和重叠率之间的关系}
+    \label{fig:placeholder}
+\end{figure}
+\subsubsection{模型建立}
+对于海底地形有坡度的海域，我们建立了如图所示的模型：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{pic/2023B-q1_ver2.png}
+    \caption{覆盖宽度、测线间距和重叠率之间的关系}
+    \label{fig:placeholder}
+\end{figure}
+设 AH 为$W_1$，FG为$W_2$, AI为$W_{11}$, IH为$W_{12}$, FJ为$W_{21}$, JG为$W_{22}$,由于覆盖宽度是覆盖平面的长度，所以我们将计算所用到的$W_{12}$和$W_{21}$投影到平面上，得到 IU =$W_{12}cos\alpha$ 和 FT =$W_{21}$，这样就得到了重叠率$\eta=1-\frac{d}{(W_{12}+W_{21})cos\alpha}$。
+下面我们推导$W_{12}$和$W_{21}$的长度。由题目可知，$\triangle EFG \sim \triangle BAH$,$ET \perp FT$，所以$\angle BAI = \angle EFJ=\frac{\pi}{2}-\frac{\theta}{2}-\alpha$
+\subsection{问题二的模型建立与求解}
+\subsubsection{模型的建立}
+
+\subsection{问题三的模型建立与求解}
+\subsubsection{模型的建立}
+问题三的待测海域为东西宽 $4$ 海里、南北长 $2$ 海里的规则矩形海域，海底坡面整体满足西深东浅，因此可以使用问题二的建模和思路进行求解。
+
+由问题二的结论可知，当测线方向取为局部等深线方向时，测线垂面内的有效坡度最大且沿测线方向水深不变。对于本题的规则单坡面海域，等深线沿南北方向分布，因此取测线方向为南北方向，即
+
+\begin{equation}
+\beta=\frac{\pi}{2}.
+\end{equation}
+
+此时测线平行于南北方向，因而每条测线的长度均等于海域南北跨度 $2$ 海里。于是，问题三的优化目标转化为：\textbf{在满足完全覆盖与重叠率约束的前提下，使测线条数最少。}下面通过建立 坐标系推导完整的优化问题数学表达式。
+
+\vspace{0.5em}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{outputs/figures/question3_scene_3d.png}
+\caption{问题三海域坐标系示意图}
+\label{fig:q3_geometry}
+\end{figure}
+
+如图，在水平面内建立三维坐标系模型：令海域中心为原点，$x$ 轴沿东西方向取东侧为正向，$y$ 轴沿南北方向。于是海域区域可表示为
+
+\begin{equation}
+\Omega=\left\{(x,y)\ \middle|\ -2\le x\le 2,\ -1\le y\le 1\right\},
+\end{equation}
+
+其中 $x,y$ 的单位均为海里。
+
+由于海底为西深东浅的单一坡面，故任一点处水深仅与 $x$ 有关。将海里换算为米后，海底水深函数可写为
+
+\begin{equation}
+D(x)=110-1852\,x\tan\alpha,
+\qquad \alpha=1.5^\circ,
+\end{equation}
+
+\vspace{0.5em}
+
+设第 $i$ 条测线位于 $x=x_i$，其处水深记为$D_i=D(x_i)$。
+在测线垂面内，依据问题一、问题二的几何建模，多波束在深水侧与浅水侧的斜坡覆盖宽度分别为
+
+\begin{equation}
+W_{d}(D_i)=\frac{D_i\sin\frac{\theta}{2}}{\cos\left(\frac{\theta}{2}+\alpha\right)},
+\end{equation}
+
+\begin{equation}
+W_{s}(D_i)=\frac{D_i\sin\frac{\theta}{2}}{\cos\left(\frac{\theta}{2}-\alpha\right)},
+\end{equation}
+
+\vspace{0.5em}
+
+将测线从东向西编号，即第 $1$ 条测线最靠东，依次有$x_1>x_2>\cdots>x_n$.设相邻两条测线之间的水平间距为$d_i=x_i-x_{i+1}$,则第 $i$ 条测线深水侧与第 $i+1$ 条测线浅水侧之间的可以重叠率表示为
+
+\begin{equation}
+\eta_i
+=
+1-\frac{d_i}{(W_d(D_i)+W_s(D_{i+1}))cos\alpha},
+\qquad i=1,2,\ldots,n-1.
+\end{equation}
+因此相邻测线间距满足
+
+\begin{equation}
+d_i=(1-\eta_i)\left[W_d(D_i)+W_s(D_{i+1})\right]cos\alpha.
+\end{equation}
+由于$D_{i+1}=D(x_{i+1})=D(x_i-d_i)$,所以第 $i$ 组间距可以转化为变量为x的函数：
+
+\begin{equation}
+d_i=(1-\eta_i)\left[W_d\bigl(D(x_i)\bigr)+W_s\bigl(D(x_i-d_i)\bigr)\right]cos\alpha.
+\end{equation}
+
+然后推导边界覆盖条件。由于我们从东侧浅海域开始铺设测线，最东侧边界为 $x=2$，为保证东边界刚好被覆盖，西边界能够被覆盖，东西两侧测线应满足
+
+\begin{equation}
+x_1+W_s\bigl(D(x_1)\bigr)cos\alpha=2.
+\end{equation}
+
+\begin{equation}
+x_n-W_d\bigl(D(x_n)\bigr)cos\alpha\le -2.
+\end{equation}
+
+因为每条测线均为南北向直线，长度恒为 $2$ 海里，因此总测线长度为
+
+\begin{equation}
+L=2n.
+\end{equation}
+
+所以问题三可以表达为如下优化模型：
+
+\begin{equation}
+\begin{aligned}
+    \min\quad & L=2n\\
+    \text{s.t.}\quad 
+    & d_i=(1-\eta_i)\left[W_d\bigl(D(x_i)\bigr)+W_s\bigl(D(x_i-d_i)\bigr)\right]cos\alpha,
+\qquad i=1,2,\ldots,n-1,\\
+    & 0.1\le \eta_i\le 0.2,
+\qquad i=1,2,\ldots,n-1,\\
+    & x_1+W_s\bigl(D(x_1)\bigr)cos\alpha=2,\\
+    & x_n-W_d\bigl(D(x_n)\bigr)cos\alpha\le -2.
+\end{aligned}
+\end{equation}
+
+若进一步分析，由于总测线长度仅与测线条数有关，而测线条数又由相邻测线间距决定，因此要使 $n$ 最小，就应尽可能增大各相邻测线间距，也就是使相邻测线的重叠率尽可能小。所以当 $\eta_i$ 取允许范围内的最小值时，$d_i$ 取得最大值。于是最优解应当在约束下界，即$\eta=0.1$处取到,
+
+因此最优布线模型表示为
+
+\begin{equation}
+d_i=0.9\left[W_d\bigl(D(x_i)\bigr)+W_s\bigl(D(x_i-d_i)\bigr)\right]cos\alpha,
+\qquad i=1,2,\ldots,n-1.
+\end{equation}
+
+\subsubsection{模型求解}
+
+首先，根据首条测线位置 $x_1$ 满足的方程$x_1+W_s\bigl(D(x_1)\bigr)cos\alpha=2$,求解$x_1$,
+将$D(x)$与$W_s(D)$代入后，得到关于 $x_1$ 的一元非线性方程
+
+\begin{equation}
+f(x)=x+\frac{\left(110-1852x\tan 1.5^\circ\right)\sin 60^\circ\cos 1.5^\circ}{1852\cos(60^\circ-1.5^\circ)}-2=0.
+\end{equation}
+
+由于该式为递增函数，因此可以利用二分法求解首条测线位置为$x_1=1.9878\ \text{海里}$.
+对应的的实际水深为
+
+\begin{equation}
+D_1=D(x_1)=13.60\ \text{m},
+\end{equation}
+
+在确定 $x_1$ 后，后续测线按相邻重叠率恒取 $10\%$ 的原则递推生成，从而得到全部测线的位置序列。
+
+最终计算得到末条测线位置为$x_{34}=-1.8877\ \text{海里}$,其深水侧覆盖后到达的位置为$-2.0851990264\le -2$，
+说明最西侧测线已经覆盖西边界，递推终止。确定测线总条数为\textbf{34},总测线长度为\textbf{68海里}。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{outputs/figures/question3_line_distribution.png}
+\caption{测线布设编号与位置关系图}
+\label{fig:q3_solution}
+\end{figure}
+
+如图说明了绘制测线编号与布设位置关系图，可以发现随着水深的增加，测线的间距也逐渐增大。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{outputs/figures/question3_overlap_curve.png}
+\caption{测线间重叠率曲线图}
+\label{fig:q3_solution}
+\end{figure}
+
+图？？？也表明在该求解方案下，所有相邻测线的重叠率均稳定控制在约束下界处，既保证了海域完全覆盖，又使相邻测线间距尽可能大，从而实现了总测线长度的最小化。
+
+最终各测线布设位置与水深如下，
+
+\begin{table}[htbp]
+    \centering
+    \caption{测线布设信息}
+    \label{tab:position_velocity}
+
+    \csvautotabular{
+    outputs/tables/question3_line_plan.csv
+    }
+\end{table}
+
+\subsection{问题四的模型建立与求解}
+\subsubsection{模型的建立}
+
+%%%%%评价%%%%%
+\section{模型评价}
+\subsection{模型的优点}
+\subsubsection{模型具有}
+
+\subsection{模型的缺点}
+\subsubsection{模型}
+
+
+%%%%%总结%%%%%
+\section{总结}
+
+%%%%%参考文献%%%%%
+\begin{thebibliography}{99}   % 99 是最大编号宽度
+
+\end{thebibliography}
+
+\section*{附录}
+\appendix
+
+\section{文件清单}
+
+\noindent{支撑材料的文件列表清单：}
+
+\begin{enumerate}
+    \item
+\end{enumerate}
+
+\section{代码}
+
+\noindent{数据}
+\lstinputlisting[language=Python]{}
+
 \end{document}
