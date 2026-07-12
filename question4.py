@@ -1,3 +1,7 @@
+"""
+文件名：question4.py
+用于存放问题四主代码
+"""
 import math
 from pathlib import Path
 

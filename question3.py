@@ -1,3 +1,7 @@
+"""
+文件名：question3.py
+用于存放问题三主代码
+"""
 import math
 
 import matplotlib.pyplot as plt

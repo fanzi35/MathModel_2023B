@@ -1,3 +1,7 @@
+"""
+文件名：utils.py
+用于存放各种主代码需要用到的工具函数
+"""
 from pathlib import Path, PurePosixPath
 from zipfile import ZIP_DEFLATED, ZipFile
 from xml.etree import ElementTree as ET

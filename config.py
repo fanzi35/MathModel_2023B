@@ -1,3 +1,7 @@
+"""
+文件名：config.py
+用于存放公共参数，路径配置等常量
+"""
 from pathlib import Path
 import math
 
