@@ -63,9 +63,9 @@
 \begin{abstract}
 多波束测深系统利用多个不同角度的声波波束，实现对海底地形的条带式测量。其覆盖宽度受水深、海底坡度及测线方向等因素影响，因此需要合理规划测线，以保证全面覆盖并提高测量效率。本文基于对测线，覆盖率等因素进行了的分析，建立了相应的数学模型，用于解决多波束测线方案的设计问题。
 
-\textbf{针对问题一：}
+\textbf{针对问题一：}本文将多波束测深过程抽象为二维几何模型，通过分析声波传播路径与海底坡面的空间关系，利用投影关系和三角几何方法建立覆盖宽度与换能器开角、海水深度及坡度之间的数学模型，并进一步构造相邻测线重叠率计算模型，为测线布设提供理论依据。
 
-\textbf{针对问题二：}
+\textbf{针对问题二：}针对问题二中测线方向变化导致的三维空间影响，本文通过空间投影方法构造测线方向对应的法截面，将三维坡面转化为二维等效斜坡模型，并得到等效坡度参数。在此基础上，将问题二转化为问题一的推广形式，利用已有覆盖宽度模型实现不同测线方向下多波束覆盖范围的计算。
 
 \textbf{针对问题三：}
 
@@ -99,8 +99,16 @@
 
 \section{问题分析}
 \subsection{问题一分析}
+问题一主要研究在存在一定坡度的海底地形下，多波束换能器扫描形成的覆盖条带宽度以及相邻测线之间重叠率的变化规律。由于换能器波束传播过程具有明显的几何特征，因此本文将声波覆盖区域抽象为二维截面内的几何关系，通过建立测线方向与海底坡面交线所在平面的几何模型，将覆盖宽度问题转化为斜坡条件下的空间投影问题。
+
+具体而言，本文利用投影关系、三角函数关系以及正弦定理等几何方法，分析换能器开角$\theta$、海水深度D与海底坡度$\alpha$对覆盖宽度W的影响，建立覆盖宽度与各参数之间的函数关系。在此基础上，结合相邻测线间距d，进一步构造条带重叠率模型，并建立不同位置处测线间距与覆盖区域变化的递推计算关系，为后续复杂地形条件下的测线规划提供基础模型。
 
 \subsection{问题二分析}
+问题二在问题一的基础上进一步考虑实际测量过程中测线方向与海底坡面方向不一致的情况，此时波束覆盖区域不再处于简单二维截面内，而需要从三维空间角度进行分析。
+
+针对该问题，本文仍采用几何建模思想，首先选取测线方向作为空间参考方向，将测线方向与海底坡面法向在水平面的投影夹角$\beta$引入模型。随后，通过空间投影方法寻找与测线方向垂直的法截面，并将三维坡面在该截面内等效为具有一定坡度的二维斜坡，从而得到与问题一对应的等效坡度$\gamma$。
+
+经过上述转换后，三维多波束覆盖问题可重新表示为二维斜坡条件下的覆盖宽度计算问题，因此可直接调用问题一建立的覆盖宽度模型，实现由二维模型向三维复杂测线方向条件下的推广。
 
 \subsection{问题三分析}
 
@@ -127,10 +135,10 @@
 \toprule
 符号 & 说明 & 单位 \\
 \midrule
-$\theta$ & 多波束换能器的开角 & m \\
+$\theta$ & 多波束换能器的开角 & $^\circ$ \\
 d & 相邻两条测线的间距 &m\\
 W & 条带的覆盖宽度 & m \\
-
+$\alpha$ & 海底坡度 & $^\circ$ \\
 \bottomrule
 \end{tabular}
 
@@ -158,14 +166,66 @@ W & 条带的覆盖宽度 & m \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{pic/2023B-q1_ver2.png}
-    \caption{覆盖宽度、测线间距和重叠率之间的关系}
+    \caption{海底有坡度的模型示意图}
     \label{fig:placeholder}
 \end{figure}
-设 AH 为$W_1$，FG为$W_2$, AI为$W_{11}$, IH为$W_{12}$, FJ为$W_{21}$, JG为$W_{22}$,由于覆盖宽度是覆盖平面的长度，所以我们将计算所用到的$W_{12}$和$W_{21}$投影到平面上，得到 IU =$W_{12}cos\alpha$ 和 FT =$W_{21}$，这样就得到了重叠率$\eta=1-\frac{d}{(W_{12}+W_{21})cos\alpha}$。
-下面我们推导$W_{12}$和$W_{21}$的长度。由题目可知，$\triangle EFG \sim \triangle BAH$,$ET \perp FT$，所以$\angle BAI = \angle EFJ=\frac{\pi}{2}-\frac{\theta}{2}-\alpha$
+首先我们推导海水深度与测线距中心点处的距离的关系。设BI=$D_i$，EJ=$D_j$，同时\textbf{正方向为水深变浅的方向}，由于$BI\parallel EJ$，$BI \perp BE$，所以四边形BIJE是直角梯形，从而得到
+\begin{equation}
+D_j=D_i-dtan\alpha
+\label{depth}
+\end{equation}
+将表格中的测线距中心点处的距离代入式~\ref{depth}的d，再将中心点处的水深代入式~\ref{depth}的$D_i$，就可以算出每个点的水深。
+设 AH 为$W_1$，FG为$W_2$，AI为$W_{11}$，IH为$W_{12}$，FJ为$W_{21}$，JG为$W_{22}$，由于覆盖宽度是覆盖平面的长度，所以我们将计算所用到的$W_{12}$和$W_{21}$投影到平面上，得到 IU =$W_{12}cos\alpha$ 和 FT =$W_{21}cos\alpha$，这样就得到了重叠率
+\begin{equation}
+\eta=1-\frac{d}{(W_{12}+W_{21})cos\alpha}
+\label{cdl}
+\end{equation}
+下面我们推导$W_{12}$和$W_{21}$的长度。首先要推出覆盖宽度的计算公式，由题目可知，$\triangle EFG \sim \triangle BAH$,$ET \perp FT$，所以$\angle BAI = \angle EFJ=\frac{\pi-\theta}{2}-\alpha$，接着可以得到$\angle BHI = \angle EGJ=\frac{\pi-\theta}{2}+\alpha$。根据正弦定理，在$\triangle BIH$中，有
+\begin{equation}
+\frac{BI}{sin\angle BAI}=\frac{AI}{sin\angle ABI}
+\end{equation}
+\begin{equation}
+\frac{BI}{sin\angle BHI}=\frac{IH}{sin\angle IBH}
+\end{equation}
+从而得到
+\begin{equation}
+W_{11}=AI=\frac{BIsin(\frac{\theta}{2}) }{cos(\frac{\theta}{2}+\alpha)}
+\end{equation}
+\begin{equation}
+W_{12}=IH=\frac{BIsin(\frac{\theta}{2}) }{cos(\frac{\theta}{2}-\alpha)}
+\label{w12}
+\end{equation}
+从而可以得到\textbf{覆盖宽度}为
+\begin{equation}
+W=W_{1}+W_{2}=\frac{Dsin(\frac{\theta}{2})}{cos(\frac{\theta}{2}+\alpha)}+\frac{Dsin(\frac{\theta}{2})}{cos(\frac{\theta}{2}-\alpha)}
+\end{equation}
+同理我们可以得到
+\begin{equation}
+W_{21}=FJ=\frac{EJsin(\frac{\theta}{2}) }{cos(\frac{\theta}{2}+\alpha)}
+\label{w21}
+\end{equation}
+将式~\ref{w12}和~\ref{w21}代入式~\ref{cdl}中，得到覆盖率为
+\begin{equation}
+\eta = 1-\frac{dcos(\frac{\theta}{2}-\alpha)cos(\frac{\theta}{2}+\alpha)}{(D_icos(\frac{\theta}{2}+\alpha)+D_jcos(\frac{\theta}{2}-\alpha))sin\frac{\theta}{2}cos\alpha}
+\end{equation}
+接下来把题中多波束换能器的开角$\theta = 120^\circ$，坡度$\alpha=1.5^\circ$，海域中心点处的海水深度为 70 m代入上述式子中，即可求出最终结果。结果如下
+\begin{table}[H]
+    \centering
+    \caption{部分节点位置随时间变化表}
+    \resizebox{0.9\textwidth}{!}{
+        \csvautotabular{
+        outputs/tables/question1_result_table.csv
+        }}
+\end{table}
 \subsection{问题二的模型建立与求解}
 \subsubsection{模型的建立}
-
+根据题目信息，我们建立了下图所示的模型图
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{pic/2023B-q2.png}
+    \caption{第二题模型示意图}
+    \label{fig:placeholder}
+\end{figure}
 \subsection{问题三的模型建立与求解}
 \subsubsection{模型的建立}
 问题三的待测海域为东西宽 $4$ 海里、南北长 $2$ 海里的规则矩形海域，海底坡面整体满足西深东浅，因此可以使用问题二的建模和思路进行求解。
@@ -217,7 +277,7 @@ W_{s}(D_i)=\frac{D_i\sin\frac{\theta}{2}}{\cos\left(\frac{\theta}{2}-\alpha\righ
 
 \vspace{0.5em}
 
-将测线从东向西编号，即第 $1$ 条测线最靠东，依次有$x_1>x_2>\cdots>x_n$.设相邻两条测线之间的水平间距为$d_i=x_i-x_{i+1}$,则第 $i$ 条测线深水侧与第 $i+1$ 条测线浅水侧之间的可以重叠率表示为
+假设从东向西布设测线，将测线从东向西编号，即第 $1$ 条测线最靠东，依次有$x_1>x_2>\cdots>x_n$.设相邻两条测线之间的水平间距为$d_i=x_i-x_{i+1}$,则第 $i$ 条测线深水侧与第 $i+1$ 条测线浅水侧之间的可以重叠率表示为
 
 \begin{equation}
 \eta_i
@@ -236,7 +296,7 @@ d_i=(1-\eta_i)\left[W_d(D_i)+W_s(D_{i+1})\right]cos\alpha.
 d_i=(1-\eta_i)\left[W_d\bigl(D(x_i)\bigr)+W_s\bigl(D(x_i-d_i)\bigr)\right]cos\alpha.
 \end{equation}
 
-然后推导边界覆盖条件。由于我们从东侧浅海域开始铺设测线，最东侧边界为 $x=2$，为保证东边界刚好被覆盖，西边界能够被覆盖，东西两侧测线应满足
+然后推导边界覆盖条件。因为我们从东侧浅海域开始铺设测线，最东侧边界为 $x=2$，为保证东边界刚好被覆盖，西边界能够被覆盖，东西两侧测线应满足
 
 \begin{equation}
 x_1+W_s\bigl(D(x_1)\bigr)cos\alpha=2.
@@ -315,20 +375,201 @@ D_1=D(x_1)=13.60\ \text{m},
 
 图？？？也表明在该求解方案下，所有相邻测线的重叠率均稳定控制在约束下界处，既保证了海域完全覆盖，又使相邻测线间距尽可能大，从而实现了总测线长度的最小化。
 
-最终各测线布设位置与水深如下，
-
-\begin{table}[htbp]
-    \centering
-    \caption{测线布设信息}
-    \label{tab:position_velocity}
-
-    \csvautotabular{
-    outputs/tables/question3_line_plan.csv
-    }
-\end{table}
-
 \subsection{问题四的模型建立与求解}
 \subsubsection{模型的建立}
+本问题给定的是某海域规则网格内的实测水深数据，其本质不再是单一平面坡海域，而是由离散点描述的真实海底曲面。由于海底地形起伏复杂，测线设计不存在唯一解析解，因此本问是以少漏测，重叠率超过 $20\%$ 的测线长度尽可能短和测线总长尽可能短为目标的优化问题。不过，考虑实际情况，对于重点海域的测深应不允许漏测情况的出现，因此我们的算法旨在设计在不漏测的情况下，寻找重叠率超过$20\%$的测线长度尽可能短且测线总长尽可能短的方案。
+
+根据《海道测量规范》的测线布设的技术要求，合理的设计原则应满足以下两点：其一，在满足精度要求的前提下，根据多波束系统在不同水深段的覆盖率的大小，把调查区按水深划分成若干区域，每个区域的水深变化均在多波束系统相同覆盖率的范围；其二，测线布设要尽可能地平行等深线，这样就可以最大限度地增加海底覆盖率，保持不变的扫描宽度。
+
+这也与我们之前得出的结论相同，由于测线布设应尽可能平行于等深线，我们需要根据该区域的水深数据绘制等深线图像，并将真实曲面海域化为若干等深线近似平行的子区域，再使用问题三的最优测线布设方法在每个子区域内复用来进行求解。
+
+为此，接下来我们构建某一子区域内海底的平面近似表示，设
+
+\begin{equation}
+z=\beta_0+\beta_1 x+\beta_2 y,
+\end{equation}
+
+其中，$x,y$ 的单位为海里，$z$ 表示水深，单位为米。对区域内所有实测网格点 $(x_i,y_i,z_i)$，采用最小二乘法估计参数 $\beta_0,\beta_1,\beta_2$，即求解
+
+\begin{equation}
+\min_{\beta_0,\beta_1,\beta_2}
+\sum_{i=1}^{N}
+\left(
+z_i-\beta_0-\beta_1 x_i-\beta_2 y_i
+\right)^2 .
+\end{equation}
+记拟合平面的法向量为$\bm{n}=(-\beta_1,-\beta_2,1)$.由于该法向量与水平面的夹角决定了局部坡度，因此局部坡面倾角 $\alpha$ 满足
+\begin{equation}
+\cos\alpha
+=
+\frac{1}{\sqrt{1+\beta_1^2+\beta_2^2}}.
+\end{equation}
+进一步地，法向量在水平面上的投影方向为$\bm{n}_h=(-\beta_1,-\beta_2)$,方向为局部由浅到深的最大变化方向，等效为局部坡向。于是，与其垂直的方向$\bm{t}_h=(\beta_2,-\beta_1)$便构成局部等深线方向。根据问题三的结论，在每个子区域内均取测线方向平行于$\bm{t}_h$。
+
+为了将问题三的方法局部化，引入以局部坡向为法向的标量坐标 $u$，并将子区域内任一点在坡向上的投影记为 $u$。设子区域中心点为 $(x_c,y_c)$，其水深为
+\begin{equation}
+D_c=\beta_0+\beta_1 x_c+\beta_2 y_c.
+\end{equation}
+若记局部水平梯度模长为$g=\sqrt{\beta_1^2+\beta_2^2}$,则沿坡向移动 $\Delta u$ 海里所引起的水深变化可近似写为
+\begin{equation}
+D(u)=D_c+g(u-u_c),
+\end{equation}
+其中 $u_c$ 为中心点在坡向上的投影坐标。这样，每个局部子区域都被转化为一个沿 $u$ 方向水深线性变化而测线方向近似等深的局部斜坡海域。在该局部模型下，可直接继承问题三中的覆盖宽度公式进行后续计算。
+
+按照我们的假设，不允许漏测的发生，因此本问的优化目标采用分层结构：首先必须满足全区域零漏测，其次在零漏测前提下尽量减少重叠率超过 $20\%$ 的测线长度，并尽量缩短测线总长。用罚函数形式可写为
+\begin{equation}
+\min F
+=
+M A_{\text{miss}}
++
+\lambda_1 L_{>20\%}
++
+\lambda_2 L_{\text{total}},
+\qquad M\gg \lambda_1 \gg \lambda_2,
+\end{equation}
+其中 $A_{\text{miss}}$ 表示漏测面积，$L_{>20\%}$ 表示重叠率超过 $20\%$ 的测线长度，$L_{\text{total}}$ 表示测线总长。
+
+\subsubsection{模型的可视化与预处理}
+原始数据文件为规则网格形式，东西方向坐标范围为 $0\sim 4$ 海里，南北方向坐标范围为 $0\sim 5$ 海里，两个方向上的采样步长均为 $0.02$ 海里，对应水深矩阵规模约为 $251\times 201$。在建模之前，首先对原始深度场绘制等深线图，从整体上识别海底坡向变化、弯曲程度以及局部地形复杂区域。
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1.00\textwidth]{outputs/figures/question4_contours_partitions.png}
+\caption{海域等深线及分区编号示意图}
+\label{fig:q4_contour_partition}
+\end{figure}
+为了使每个子区域内的等深线尽可能平行，本文采用自适应细分的方式进行预处理。具体而言，先由原始深度场计算局部梯度$\frac{\partial D}{\partial x},\frac{\partial D}{\partial y}$,并据此定义局部坡向角场
+\begin{equation}
+\phi(x,y)
+=
+\operatorname{mod}
+\left(
+\arctan2\left(\frac{\partial D}{\partial y},\frac{\partial D}{\partial x}\right),\pi
+\right).
+\end{equation}
+
+对任意候选子区域，本文使用两个指标评价其局部平面的近似效果：
+
+一是坡向离散度，用于衡量该区域内等深线方向是否足够一致；二是局部平面拟合均方根误差，用于衡量该区域能否被单一平面良好近似。设区域内所有坡向角为 $\phi_1,\phi_2,\ldots,\phi_m$，则先作双角变换，定义
+\begin{equation}
+\bar c=\frac{1}{m}\sum_{i=1}^m \cos(2\phi_i),
+\qquad
+\bar s=\frac{1}{m}\sum_{i=1}^m \sin(2\phi_i),
+\end{equation}
+并记方向集中系数为
+\begin{equation}
+\rho=\sqrt{\bar c^2+\bar s^2}.
+\end{equation}
+则该区域的坡向离散度可表示为
+\begin{equation}
+\sigma_\phi
+=
+\frac{1}{2}
+\sqrt{-2\ln\rho}.
+\end{equation}
+另一方面，若拟合平面预测值为 $\hat z_i$，则均方根误差为
+\begin{equation}
+\mathrm{RMSE}
+=
+\sqrt{
+\frac{1}{N}
+\sum_{i=1}^{N}
+\left(z_i-\hat z_i\right)^2
+}.
+\end{equation}
+当某一区域同时满足坡向离散度较小和平面拟合误差较小时，可认为该区域内等深线近似平行；反之，则继续将其沿行或列方向二分细化，并选择使综合评价更优的划分方式。本文在程序中使用了经验阈值
+\begin{equation}
+\sigma_\phi \le 8^\circ,
+\qquad
+\mathrm{RMSE}\le 1.2\ \text{m},
+\end{equation}
+作为停止细分的判据。
+
+基于上述自适应分区原则，最终将海域划分为 $15$ 个子区域。整体上看，西南部及中部区域的等深线较为平缓，分区尺度相对较大；而东南部和东北侧局部地形变化较快，分区相对更细，从而保证每个子区域内等深线都尽量接近平行。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\textwidth]{outputs/figures/question4_regions_overview.png}
+\caption{海域各分区局部等深线放大图}
+\label{fig:q4_region_zoom}
+\end{figure}
+
+从图 \ref{fig:q4_region_zoom} 可以看出，不同分区内的等深线方向已近似平行：有的区域等深线近似竖直分布，有的区域近似水平分布，也有部分区域呈缓慢弯曲趋势，但在局部尺度下均可被视作方向稳定的局部斜坡海域。这为后续求解阶段可以复用问题三的局部测线模型奠定了基础。
+
+\subsubsection{模型求解}
+在完成分区与局部平面拟合后，最短测线的计算可以分为三步进行：即局部生成、全局校核、逐区修正。
+
+首先，对每个子区域，根据拟合平面参数确定其局部坡度 $\alpha$ 与局部等深线方向，再沿局部等深线方向布设测线。为了使测线总长尽可能短，同时尽量降低重叠率，先将相邻测线的目标理论重叠率取为$\eta^\ast=10\%$.
+在该目标下，子区域内首条测线还是由浅水边界恰好覆盖确定，后续测线由相邻间距递推生成。由于局部子区域中的水深并非严格线性，故在理论布线之后，必须回到原始网格数据上进行真实覆盖评价。
+
+为此，本文采用双线性插值构造原始深度场的连续近似。设查询点为 $(x,y)$，其位于网格单元
+
+\begin{equation}
+[x_i,x_{i+1}]\times [y_j,y_{j+1}]
+\end{equation}
+内，则对应深度值采用双线性插值计算为
+\begin{equation}
+\hat D(x,y)
+=
+(1-t_x)(1-t_y)D_{11}
++
+t_x(1-t_y)D_{21}
++
+(1-t_x)t_yD_{12}
++
+t_x t_yD_{22},
+\end{equation}
+其中
+\begin{equation}
+t_x=\frac{x-x_i}{x_{i+1}-x_i},
+\qquad
+t_y=\frac{y-y_j}{y_{j+1}-y_j}.
+\end{equation}
+
+对每条候选测线，在其线段上均匀取样，我们取每点的最小深度作为该测线的保守设计深度，从而保证没有漏测情况的发生。
+
+当所有测线生成后，再对每个子区域中的全部网格点进行覆盖判别。若某网格点未被任何测线覆盖，则说明该区域存在漏测，此时在最浅的未覆盖法向位置补充新测线，并重新校核，直至该区域全部网格点都被覆盖。
+
+在完成全部分区的局部布线与补线修正后，将各子区域测线结果汇总，统计每个区域的测线条数、测线总长、重叠率范围以及重叠率超过 $20\%$ 的测线长度，并进一步得到全局总指标。
+
+本文通过编写程序计算得到的最终结果如下：\textbf{海域共划分为 $15$ 个子区域，总测线条数为 $260$ 条，总测线总长为 $235.7128$ 海里，重叠率超过 $20\%$ 的测线总长度为 $4.2085$ 海里，无漏测}。这表明在当前分区与布线策略下，已经尽可能缩小了测线总长度并将高重叠部分控制在较小范围内。
+
+进一步地，各分区的测线统计结果如表 \ref{tab:q4_regions} 所示。表中给出了每个分区的测线条数、测线总长、最小重叠率、平均重叠率、最大重叠率以及重叠率超过 $20\%$ 的测线长度。由结果可以看出，多数分区的重叠率总体处于较低水平，而个别复杂区域由于等深线弯曲较强或局部坡向变化较快，会出现较大的最大重叠率，这也正是第四问中“局部复杂地形不可避免带来超叠”的现实体现。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{问题四各分区测线计算结果}
+\label{tab:q4_regions}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+分区编号 & 测线条数 & 测线总长/海里 & 重叠率范围/\% & $>20\%$测线长度/海里 \\ \hline
+1  & 43 & 33.0679 & 3.49$\sim$17.99 & 0.0000 \\ \hline
+2  & 21 & 22.0698 & 5.89$\sim$20.01 & 0.4971 \\ \hline
+3  & 29 & 27.4455 & 5.98$\sim$52.74 & 0.9802  \\ \hline
+4  & 23 & 20.8880 & 6.88$\sim$10.94 & 0.0000  \\ \hline
+5  & 12 & 10.5390 & 7.92$\sim$17.25 & 0.0000  \\ \hline
+6  & 12 & 12.1773 & 7.12$\sim$12.63 & 0.0000  \\ \hline
+7  & 7  & 5.5509  & 8.03$\sim$13.58 & 0.0000  \\ \hline
+8  & 9  & 7.3470  & 6.88$\sim$14.86 & 0.0000  \\ \hline
+9  & 18 & 17.6403 & 8.26$\sim$10.69 & 0.0000  \\ \hline
+10 & 22 & 15.5497 & 8.31$\sim$50.13 & 0.0705  \\ \hline
+11 & 13 & 21.7829 & 7.83$\sim$50.34 & 1.9803  \\ \hline
+12 & 14 & 12.0706 & 6.61$\sim$48.33 & 0.2215 \\ \hline
+13 & 11 & 9.0229  & 5.71$\sim$15.23 & 0.0000  \\ \hline
+14 & 13 & 10.3395 & 6.39$\sim$48.09 & 0.4589  \\ \hline
+15 & 13 & 10.2215 & 3.90$\sim$14.64 & 0.0000  \\ \hline
+\end{tabular}
+\end{table}
+
+从表 \ref{tab:q4_regions} 可见，虽然部分区域的最大重叠率超过了 $20\%$，但对应的超叠测线长度总量仍然较小，且所有区域均实现了零漏测。说明本文所采用的“局部平面拟合 + 自适应分区 + 保守布线 + 网格校核”的求解策略在工程意义上是有效的：它既继承了问题三在规则斜坡海域中的布线优势，又通过真实数据修正增强了对复杂地形的适应能力。
+
+% 在此处插入图：问题四分区结果与区域放大图在正文中的位置建议
+\begin{figure}[htbp]
+\centering
+% \includegraphics[width=0.82\textwidth]{此处插入问题四各分区局部放大图或总览图}
+\caption{问题四分区后的局部等深线放大结果}
+\label{fig:q4_local_regions}
+\end{figure}
 
 %%%%%评价%%%%%
 \section{模型评价}
