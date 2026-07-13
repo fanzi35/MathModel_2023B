@@ -1,3 +1,7 @@
+"""
+文件名：config.py
+用于存放公共参数，路径配置等常量
+"""
 from pathlib import Path
 import math
 
@@ -58,3 +62,20 @@ QUESTION3_SECTION_NAME = "question3_section_beta_90.png"
 QUESTION3_DISTRIBUTION_NAME = "question3_line_distribution.png"
 QUESTION3_OVERLAP_NAME = "question3_overlap_curve.png"
 QUESTION3_BETA_LENGTH_NAME = "question3_beta_length_curve.png"
+
+# 第四问公共参数
+QUESTION4_RAW_DATA_PATH = Path("data") / "raw" / "question4_raw_data.xlsx"
+QUESTION4_MIN_REGION_ROWS = 32
+QUESTION4_MIN_REGION_COLS = 28
+QUESTION4_MAX_ORIENTATION_STD_DEG = 8.0
+QUESTION4_MAX_PLANE_RMSE_M = 1.2
+QUESTION4_TARGET_OVERLAP = 0.10
+QUESTION4_LINE_SAMPLE_COUNT = 60
+QUESTION4_MAX_GAP_FIX_ITER = 20
+
+# 第四问输出文件名
+QUESTION4_CONTOUR_NAME = "question4_contours_partitions.png"
+QUESTION4_REGIONS_OVERVIEW_NAME = "question4_regions_overview.png"
+QUESTION4_REGION_PREFIX = "question4_region_"
+QUESTION4_REGION_SUMMARY_NAME = "question4_region_summary.csv"
+QUESTION4_OVERALL_SUMMARY_NAME = "question4_overall_summary.csv"

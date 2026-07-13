@@ -1,3 +1,7 @@
+"""
+文件名：question2.py
+用于存放问题二主代码
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

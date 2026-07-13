@@ -1,8 +1,13 @@
+"""
+文件名：utils.py
+用于存放各种主代码需要用到的工具函数
+"""
 from pathlib import Path, PurePosixPath
 from zipfile import ZIP_DEFLATED, ZipFile
 from xml.etree import ElementTree as ET
 
 import matplotlib
+import numpy as np
 import pandas as pd
 
 
@@ -25,10 +30,10 @@ def format_number(value, digits=2):
     return f"{float(value):.{digits}f}"
 
 
-def save_table_csv(df, output_path):
+def save_table_csv(df, output_path, include_header=True):
     """保存表格副本。"""
     ensure_directory(Path(output_path).parent)
-    df.to_csv(output_path, index=False, encoding="utf-8-sig")
+    df.to_csv(output_path, index=False, header=include_header, encoding="utf-8-sig")
 
 
 def _set_sheet_cell(sheet_root, cell_ref, value):
@@ -168,3 +173,50 @@ def save_result2_excel(template_path, output_path, result_df):
             cell_values[f"{col}{row_number}"] = width_table.loc[direction_deg, distance_nm]
 
     _write_template_cells(template_path, output_path, cell_values)
+
+
+def _column_label_to_index(label):
+    """将 Excel 列标转换为从 0 开始的列序号。"""
+    value = 0
+    for char in label:
+        value = value * 26 + (ord(char.upper()) - ord("A") + 1)
+    return value - 1
+
+
+def _cell_ref_to_index(cell_ref):
+    """将单元格引用转换为从 0 开始的行列序号。"""
+    col_label = "".join(ch for ch in cell_ref if ch.isalpha())
+    row_label = "".join(ch for ch in cell_ref if ch.isdigit())
+    return int(row_label) - 1, _column_label_to_index(col_label)
+
+
+def read_numeric_excel_sheet(path):
+    """只读解析数值型 xlsx 工作表并返回 DataFrame。"""
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    zip_bytes = {}
+    with ZipFile(path, "r") as zf:
+        for name in zf.namelist():
+            zip_bytes[name] = zf.read(name)
+
+    sheet_path = _first_sheet_path(zip_bytes)
+    root = ET.fromstring(zip_bytes[sheet_path])
+    dimension = root.find("m:dimension", ns)
+    if dimension is None:
+        raise ValueError("Excel 缺少 dimension 信息")
+
+    end_ref = dimension.attrib["ref"].split(":")[-1]
+    max_row, max_col = _cell_ref_to_index(end_ref)
+    data = np.full((max_row + 1, max_col + 1), np.nan, dtype=float)
+
+    for row in root.find("m:sheetData", ns).findall("m:row", ns):
+        for cell in row.findall("m:c", ns):
+            cell_ref = cell.attrib.get("r")
+            if not cell_ref:
+                continue
+            value_node = cell.find("m:v", ns)
+            if value_node is None or value_node.text in (None, ""):
+                continue
+            row_idx, col_idx = _cell_ref_to_index(cell_ref)
+            data[row_idx, col_idx] = float(value_node.text)
+
+    return pd.DataFrame(data)
